@@ -49,7 +49,7 @@ export default class SpeechAutoToJournal extends Plugin {
 
 				const dateStr = match[0]
 				this.audioHandler.saveAudioFilesToOb(dateStr)
-				new Notice('Saved!')
+				new Notice('Audio files saved!')
 			}
 		});
 
@@ -72,6 +72,33 @@ export default class SpeechAutoToJournal extends Plugin {
 				}
 
 				const dateStr = match[0]
+				this.audioHandler.audiosToText(dateStr)
+					.then(() => this.promptHandler.generateChatMessage(dateStr))
+			}
+		});
+
+		this.addCommand({
+			id: "speech-to-auto-journal",
+			name: "speech to auto journal",
+			callback: async () => {
+				const current = this.app.workspace.getActiveFile()
+				if (!current) {
+					new Notice('No active file')
+					return
+				}
+				// Use a regular expression to extract a date in the format YYYY-MM-DD
+				const regex = /\d{4}-\d{2}-\d{2}/;
+				const match = current.basename.match(regex);
+
+				if (!match) {
+					new Notice('No in a date file')
+					return
+				}
+
+				const dateStr = match[0]
+
+				await this.audioHandler.saveAudioFilesToOb(dateStr)
+				new Notice('Audio files saved!')
 				this.audioHandler.audiosToText(dateStr)
 					.then(() => this.promptHandler.generateChatMessage(dateStr))
 			}
