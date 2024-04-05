@@ -94,3 +94,9 @@ If you have multiple URLs, you can also do:
 ## API Documentation
 
 See https://github.com/obsidianmd/obsidian-api
+
+## 💡Inspired by
+- [为什么你应该开始用ChatGPT写日记|做笔记(Prompt和自动化) - YouTube](https://www.youtube.com/watch?v=ZRv0Z-M7NqM)
+- [logancyang/obsidian-copilot: A ChatGPT Copilot in Obsidian](https://github.com/logancyang/obsidian-copilot)
+- [clairefro/obsidian-chat-cbt-plugin: AI-powered journaling plugin for your Obsidian notes, inspired by cognitive behavioral therapy](https://github.com/clairefro/obsidian-chat-cbt-plugin)
+- [nikdanilov/whisper-obsidian-plugin: Speech-to-text in Obsidian using OpenAI Whisper](https://github.com/nikdanilov/whisper-obsidian-plugin)
