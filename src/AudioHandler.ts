@@ -19,27 +19,37 @@ export class AudioHandler {
         // const audioFileDir = this.plugin.settings.saveAudioFilePath ? `${this.plugin.settings.saveAudioFilePath}/` : ''
         const vault = this.plugin.app.vault
         ensureFolder(vault, audioFileDir)
+        // promise array
+        const promises :Promise<void>[] = []
         for (let i = 0; i < audioFiles.length; i++) {
-            // Read the file as an ArrayBuffer (binary data)
-            const file = audioFiles[i]
-            const reader = new FileReader();
-            reader.onload = async () => {
-                try {
-                    // Convert the ArrayBuffer to Uint8Array
-                    const arrayBuffer = reader.result as ArrayBuffer;
-                    const uint8Array = new Uint8Array(arrayBuffer);
-                    // Choose or define the save location within the Obsidian vault
-                    // For simplicity, we're using a fixed path here. Consider allowing users to choose.
-                    const savePath = audioFileDir + file.name; // Example path
-                    // Use Obsidian's API to overwrite the file to the vault
-                    await saveFile(vault, savePath, uint8Array);
-                    console.log("Audio file saved successfully to", savePath);
-                } catch (error) {
-                    console.error("Failed to save audio file:", error);
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            promises.push(new Promise((resolve, reject) => {
+                // Read the file as an ArrayBuffer (binary data)
+                const file = audioFiles[i]
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    try {
+                        // Convert the ArrayBuffer to Uint8Array
+                        const arrayBuffer = reader.result as ArrayBuffer;
+                        const uint8Array = new Uint8Array(arrayBuffer);
+                        // Choose or define the save location within the Obsidian vault
+                        // For simplicity, we're using a fixed path here. Consider allowing users to choose.
+                        const savePath = audioFileDir + file.name; // Example path
+                        // Use Obsidian's API to overwrite the file to the vault
+                        await saveFile(vault, savePath, uint8Array);
+                        console.log("Audio file saved successfully to", savePath);
+                        resolve()
+                    } catch (error) {
+                        console.error("Failed to save audio file:", error);
+                        reject(error)
+                    }
+                };
+                reader.onerror = (error) => reject(error);
+                reader.readAsArrayBuffer(file);
+            }))
         }
+
+        // wait all promise done
+        await Promise.all(promises)
     }
 
     async audiosToText(
